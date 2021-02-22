@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: Bow2Kappa-Utils
+Version: 0.0.0
+Summary: Toolbox for processing, plotting and extracting statistical data of wire bow measurements
+Home-page: https://github.com/ac112303/Bow2Kappa
+Author: ArrayStream(François Bertin, Amal Chabli)
+Author-email: francois.bertin7@wanadoo.fr, amal.chabli@orange.fr
+License: MIT
+Description: ## Product Name
+        Toolbox for processing, plotting and extracting statistical data of wire bow measurements.
+        
+        ## Installation
+        clone the package and use setup.py
+        
+        ## Usage example
+        **refer to** [Bow2Kappa-examples](https://github.com/ac112303/Bow2Kappa).
+        
+        
+        # Release History
+        0.0.0 creation of the package
+        
+        # Meta
+        	- François Bertin– francois.bertin7@wanadoo.fr 
+        	- Amal Chabli- amal.chabli@orange.fr 
+        
+        Distributed under the [MIT license](https://mit-license.org/)
+        
+        # About the authors
+        	- François Bertin now retired was an expert senior in nanocharacterization at CEA-LETI
+        	- Amal Chabli now retired was a Director of Research in nanocharacterization at CEA-LITEN
+Keywords: Instrumentation,data processing,photovoltaics
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Description-Content-Type: text/markdown

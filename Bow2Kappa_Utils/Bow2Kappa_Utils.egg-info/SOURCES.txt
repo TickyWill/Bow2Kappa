@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.py
+BKU_Utils/BatchPlot.py
+BKU_Utils/BatchStat.py
+BKU_Utils/__init__.py
+Bow2Kappa_Utils.egg-info/PKG-INFO
+Bow2Kappa_Utils.egg-info/SOURCES.txt
+Bow2Kappa_Utils.egg-info/dependency_links.txt
+Bow2Kappa_Utils.egg-info/requires.txt
+Bow2Kappa_Utils.egg-info/top_level.txt
