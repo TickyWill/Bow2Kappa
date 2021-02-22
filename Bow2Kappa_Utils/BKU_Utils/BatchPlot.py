@@ -1,3 +1,13 @@
+'''
+Definition of useful functions for bow and cutting efficiency plots in batch
+ - Bow_Kappa_files
+ - Param_extract
+ - Data_extract
+ - bow2kappa
+ - Kappa_3Dplot_values
+ - Kappa_Wireframe
+ '''
+
 __all__ = [
     "Bow_Kappa_files",
     "Param_extract",
@@ -7,18 +17,26 @@ __all__ = [
     "Kappa_Wireframe",
 ]
 
+# Global variables used by bow2kappa function
+LONG = 121      # Length of the moving window for bow data smoothing; must be odd
+WIN = 'boxcar'  # Kind of moving window; 
+                # in ['boxcar', 'triang', 'hamming', 'blackman', 'bartlett', 'parzen', 'bohman'] 
+
 def Bow_Kappa_files(cut_name, my_path):
     '''
-    Version 2021.02.20
+    
     Set file names for a cut
 
-    Inputs
+    Args
     - cut_name (string): identification of the cut (ex: "125" where 125 is the reference number of the cut)
+
     - my_path (pathlib.PosixPath): path for input and output files
 
-    Outputs
+    Returns
     - input_file (pathlib.PosixPath): file name for reading the experimental data of the cut
+
     - output_file (pathlib.PosixPath): file name for saving the results related to the cut
+
     '''
     input_file_name = 'Bow_' + cut_name + '.xlsx'
     output_file_name = 'Results_' + cut_name + '.xlsx'
@@ -30,15 +48,16 @@ def Bow_Kappa_files(cut_name, my_path):
 
 def Param_extract(file, sheet):
     '''
-    Version 2021.02.20
+     
     Extract the cutting parameters.
     The parameters are listed in the sheet 'sheet' of the EXCEL file 'file'.
 
-    Inputs
+    Args
     - file (pathlib.PosixPath): file name for reading the experimental data of the cut
+
     - sheet (string): name of the sheet containing the parameters in the EXCEL file 'file'
 
-    Outputs
+    Returns
     - dparam (dictionary): from which cutting parameters values may be extracted using key "Value"
 
     '''
@@ -54,18 +73,21 @@ def Param_extract(file, sheet):
 
 def Data_extract(file, sheet, sensors_nbr):
     '''
-    Version 2021.02.20
+     
     Extract the data listed in the sheet 'sheet' of the EXCEL file 'file'.
 
-    Inputs
+    Args
     - file (pathlib.PosixPath): file name for reading the  data of the cut
+
     - sheet (string): name of the sheet containing the data in the EXCEL file 'file'
+
     - sensors_nbr (integer): number of sensors of which the data will be extracted
 
-    Outputs
+    Returns
     - data (dictionary): data extracted from the EXCEL file 'file' using columns C up to G
     depending on the number of sensors sensors_nbr vs cut progress (column B) expressed either in time
     or in percentage of cut duration
+
     '''
 
     # 3rd party imports
@@ -92,7 +114,7 @@ def Data_extract(file, sheet, sensors_nbr):
 def bow2kappa(data, dparam, output_file):
 
     '''
-    Version 2021.02.20
+      
     Data filering and downsampling
     Vertical force computation
     Cutting efficiency kappa computation
@@ -101,15 +123,20 @@ def bow2kappa(data, dparam, output_file):
          Force with columns names: 'Cut progress (%)' 'Force # (N)'
          Kappa with columns names: 'Cut progress (%)' 'Kappa # x10^7 (m/N)'
 
-    Inputs
-    - data (dictionnary): bow raw measurements
-    - dparam (dictionnary): from which cutting parameters values may be extracted using key "Value"
+    Args
+    - data (dataframe): bow raw measurements
+
+    - dparam (dataframe): from which cutting parameters values may be extracted using key "Value"
+
     - output_file (pathlib.PosixPath): file name for saving the results of the computations
 
-    outputs
-    - dic_bow (dictionnary): bow data after smoothing and downsampling
-    - dic_force (dictionnary): force data as calculated using dic_bow
-    - dic_kappa (dictionnary): kappa data as calculated using dic_force
+    Returns
+    - dic_bow (dataframe): bow data after smoothing and downsampling
+
+    - dic_force (dataframe): force data as calculated using dic_bow
+
+    - dic_kappa (dataframe): kappa data as calculated using dic_force
+
     '''
 
     # Standard library imports
@@ -147,9 +174,9 @@ def bow2kappa(data, dparam, output_file):
     per_cent_coupe = 100 * (per_cent_coupe - time_init - time_to_contact) / (60*cut_effective_duration)
 
     # Smooth and downsample the data using a moving window of length long and of type win
-    long = 121
-    win ='boxcar'   #'triang'#'boxcar',  #'hamming', 'boxcar',
-                    #'boxcar','triang', 'blackman', 'hamming', 'bartlett', 'parzen', 'bohman',
+    long = LONG
+    win = WIN 
+
     norme = sum(signal.get_window(win, long))
     dic_bow = {}
     bow_name = [x for x in data.columns if 'Bow' in x]
@@ -170,7 +197,8 @@ def bow2kappa(data, dparam, output_file):
 
     # Vertical force computation
     dic_force = {}
-    force_name = [bow.replace('Bow','Force')[:-5] + ' (N)' for bow in bow_name] # Force columns names
+    force_name = [bow.replace('Bow','Force')[:-5] + ' (N)' for bow in bow_name] # Set force columns names with bow columns names
+                                                                                # [:-5] suppress " (mm)" in bow columns names
     for force,bow in zip(force_name,bow_name):
         dic_force[force] = (4*wire_tension*np.array((dic_bow[bow]))) \
         /(2*wire_guides_gap+brick_width)
@@ -188,7 +216,8 @@ def bow2kappa(data, dparam, output_file):
 
     # Cutting efficiency computation
     dic_kappa = {}
-    kappa_name = [bow.replace('Bow','Kappa')[:-5] + ' x10^7 (m/N)' for bow in bow_name] # Kappa columns names
+    kappa_name = [bow.replace('Bow','Kappa')[:-5] + ' x10^7 (m/N)' for bow in bow_name] # Set kappa columns names with bow columns names
+                                                                                        # [:-5] suppress " (mm)" in bow columns names
     for kappa, force in zip(kappa_name,force_name):
         dic_kappa[kappa] = 10000000*(brick_width/1000)*table_speed \
         /(wire_speed*np.array((dic_force[force])))
@@ -209,20 +238,24 @@ def bow2kappa(data, dparam, output_file):
 def Kappa_3Dplot_values(dkappa,val_min, val_max,z_min,z_max,sensors_nbr):
 
     '''
-    Version 2021.02.10
+     
     Arrangement of the cutting efficiency calculated from the bow in-situ measurements
     by bow2kappa function for a wireframe 3D plot
 
-    Inputs
+    Args
     - output_file: name of the results file (output of bow2kappa function)
+
     - val_min, val_max : minimum and maximum values of the cut progress range
       used for data selection and xaxis in the 3D plot
+
     - z_min, z_max: minimum and maximum values of the cutting efficiency range
       used for zaxis in the 3D plot
+
     - sensors_nbr: number of sensors used for the bow in-situ measurements (parameter of the cut)
 
-    Outputs
+    Return
     - 3D plot of the cutting efficiency values
+
     '''
 
     # 3rd party imports
@@ -257,25 +290,32 @@ def Kappa_3Dplot_values(dkappa,val_min, val_max,z_min,z_max,sensors_nbr):
 def Kappa_Wireframe(x, y, z, z_min, z_max, cut_name, sensors_nbr, cut_progress_nb, ax):
 
     '''
-    Version 2021.02.10
     Wireframe 3D plot configuration of the cutting efficiency values
     as function of the cut progress and the sensor number
 
-    Inputs
+    Args
     - x:  1D array of the interpolated values of the cut progress for the wireframe 3D plot
       as arranged by Kappa_3Dplot_values function
+
     - y:  1D array of the interpolated values of the sensor number for the wireframe 3D plot
       as arranged by Kappa_3Dplot_values function
+
     - z: 2D array of cutting efficiency as arranged by Kappa_3Dplot_values function
+
     - z_min, z_max: minimum and maximum values of z range
       used for zaxis in the 3D plot
-    - cut_name (string): identification of the cut (ex: "125" where 125 is the reference number of the cut)
-    - sensors_nbr: number of sensors used for the bow in-situ measurements (parameter of the cut)
-    - cut_progress_nb: number of cut progress sampling points (parameter of the cut)
-    - ax: figure subplot description
 
-    Outputs
+    - cut_name (string): identification of the cut (ex: "125" where 125 is the reference number of the cut)
+
+    - sensors_nbr (integer): number of sensors used for the bow in-situ measurements (parameter of the cut)
+
+    - cut_progress_nb (integer): number of cut progress sampling points (parameter of the cut)
+
+    - ax (matplotlib.axes._subplots.AxesSubplot): figure subplot description
+
+    Returns
     - configuration of z values as function of x and y for a wireframe 3D plot
+
     '''
 
     # 3rd party imports

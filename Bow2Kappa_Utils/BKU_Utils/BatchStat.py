@@ -1,8 +1,10 @@
-''' Definition of useful functions for statistical analysis
+'''
+Definition of useful functions for statistical analysis of cutting efficiency data
  - Kappa_data
  - Kappa_flatten
  - Kappa_hist
- - Kappa_bbox'''
+ - Kappa_bbox
+'''
  
 __all__ = [
     "Kappa_data",
@@ -11,21 +13,27 @@ __all__ = [
     "Kappa_bbox",
 ]
 
+# Global variables used by Kappa_hist function
+BINS = 25   # Number of bins for histogram computation
+
 def Kappa_data(dk, val_min, val_max, sensors_nbr):
 
     '''
-    Version 2021.02.13
+    
     Define a dictionary containing the cutting efficiency data calculated from the bow in-situ measurements
     by bow2kappa function on a specific cut-progress range
 
-    Inputs
+    Args
     - data_file: name of the results file (output of bow2kappa function)
+
     - val_min, val_max : minimum and maximum values of the cut-progress range
       used for data selection
+
     - sensors_nbr: number of sensors used for the bow in-situ measurements (parameter of the cut)
 
-    Outputs
+    Return
     - Dictionary dkappa for plot and statistical analysis
+
     '''
 
     # Standard library imports
@@ -43,23 +51,29 @@ def Kappa_data(dk, val_min, val_max, sensors_nbr):
 def Kappa_flatten(kappa_file, val_min, val_max, sensors_nbr, sensor_init, sensor, sheet_kappa):
 
     '''
-    Version 2021.02.19
+    
     Flattening of data for statistical analysis of the cutting efficiency calculated
     from the bow in-situ measurements by bow2kappa function
 
     Inputs
     - kappa_file: name of the results file (output of bow2kappa function)
+
     - val_min, val_max: minimum and maximum values of the cut-progress range
                         used for plot title label
+
     - sensors_nbr: number of sensors used for the bow in-situ measurements (parameter of the cut)
+
     - sensor_init: label of the first sensor of the sensors
+
     - sensor: index of the sensor of which the data are analyzed among the sensors used for the measurements
 
-    Called functions
-     - Kappa_data: build dkappa dictionary of the cutting efficiency data calculated from the bow in-situ measurements
+    Local functions called
+     - Data_extract: Extract as a dataframe the data listed in the sheet 'sheet_kappa' of the EXCEL file 'kappa_file'
+
+     - Kappa_data: build dkappa dataframe of the cutting efficiency data calculated from the bow in-situ measurements
               by bow2kappa function on the specified cut-progress range
 
-    Outputs
+    Returns
     - dkappa_flatten: flattened dkappa dictionary
 
     '''
@@ -87,17 +101,19 @@ def Kappa_flatten(kappa_file, val_min, val_max, sensors_nbr, sensor_init, sensor
 def Kappa_hist(dkappa_flat, x_min, x_max):
 
     '''
-    Version 2021.02.19
+    
     Statistical analysis of the cutting efficiency calculated from the bow in-situ measurements
     by bow2kappa function
 
-    Inputs
-    - dkappa_flat: dictionary containing the cutting efficiency data to be analysed
+    Args
+    - dkappa_flat: dataframe containing the cutting efficiency data to be analysed
+
     - x_min, x_max: minimum and maximum values of the cutting efficiency range
                     used for the histogram plot
 
-    Outputs
+    Returns
     - Histogram plot of the cutting efficiency values
+
     '''
 
     # 3rd party imports
@@ -105,24 +121,26 @@ def Kappa_hist(dkappa_flat, x_min, x_max):
     import matplotlib.pyplot as plt
 
     # Histogram plot
-    plt.hist(dkappa_flat,bins=25)
-    plt.xlim(x_min,x_max)
+    plt.hist(dkappa_flat,bins = BINS)
+    plt.xlim(x_min, x_max)
     plt.xlabel('Cutting efficiency (10$^{-7}$ m.N$^{-1}$)',fontsize=12)
 
 def Kappa_bbox(dkappa_flat, x_min, x_max):
 
     '''
-    Version 2021.02.19
+    
     Statistical analysis of the cutting efficiency calculated from the bow in-situ measurements
     by bow2kappa function
 
-    Inputs
-    - dkappa_flat: dictionary containing the cutting efficiency data to be analysed
+    Args
+    - dkappa_flat: dataframe containing the cutting efficiency data to be analysed
+
     - x_min, x_max: minimum and maximum values of the cutting efficiency range
                     used for the boxplot plot
 
-    Outputs
+    Returns
     - Histogram plot of the cutting efficiency values
+
     - Box plot of the cutting efficiency values
     '''
 

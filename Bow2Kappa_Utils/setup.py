@@ -13,7 +13,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 # This setup is suitable for "python setup.py develop".
 
 setup(name='Bow2Kappa_Utils',
-      version='0.0.0',
+      version='0.0.1',
       description='Toolbox for processing, plotting and extracting statistical data of wire bow measurements',
       long_description=long_description,
       long_description_content_type='text/markdown',
