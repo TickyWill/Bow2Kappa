@@ -287,7 +287,7 @@ def Kappa_3Dplot_values(dkappa,val_min, val_max,z_min,z_max,sensors_nbr):
 
     return x, y, znew, cut_progress_nb
 
-def Kappa_Wireframe(x, y, z, z_min, z_max, cut_name, sensors_nbr, cut_progress_nb, ax):
+def Kappa_Wireframe(x, y, z, z_min, z_max, cut_name, sensors_nbr, cut_progress_nb, ax, factor = 1):
 
     '''
     Wireframe 3D plot configuration of the cutting efficiency values
@@ -322,9 +322,9 @@ def Kappa_Wireframe(x, y, z, z_min, z_max, cut_name, sensors_nbr, cut_progress_n
     import matplotlib.pyplot as plt
 
     # Set plot parameters
-    ticks_size = 10  # fontsize of ticks labels
-    label_size = 12  # fontsize of axes labels
-    line_space = 2   # line spacing between ticks labels and axe label
+    ticks_size = 10 * factor # fontsize of ticks labels
+    label_size = 12 * factor # fontsize of axes labels
+    line_space = 2 * factor  # line spacing between ticks labels and axe label
     x0 = [10,20,30,40,50,60,70,80]                  # xticklabels
     y0 = [i for i in range(1,sensors_nbr+1)]        # yticklabels
     z_min_rnd,z_max_rnd,z_step_nbr= int(round(z_min)),int(round(z_max)),1
